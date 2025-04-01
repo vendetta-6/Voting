@@ -28,29 +28,64 @@
             0% { transform: scale(1); }
             100% { transform: scale(1.2); }
         }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .grid img {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .grid img.selected {
+            border-color: green;
+        }
     </style>
 </head>
 <body>
     <div id="captcha-container" class="captcha-box">
         <h2>Prove you're not a robot</h2>
-        <input type="checkbox" id="captcha" onclick="nextCaptcha()"> I'm not a robot
+        <p>Select all images that match this one:</p>
+        <img id="target-image" src="" width="100" height="100">
+        <div class="grid" id="image-grid"></div>
+        <button onclick="nextCaptcha()">Verify</button>
         <p id="progress">1 / 19</p>
     </div><div id="final-page" class="hidden">
     <h1 class="celebration">🎉 April Fools! 🎉</h1>
 </div>
 
 <script>
+    const images = [
+        "cat1.jpg", "cat2.jpg", "cat3.jpg", "dog1.jpg", "dog2.jpg", "dog3.jpg", "rabbit.jpg", "hamster.jpg", "plant.jpg"
+    ];
     let count = 1;
+    function loadCaptcha() {
+        let grid = document.getElementById('image-grid');
+        grid.innerHTML = "";
+        let shuffled = images.sort(() => 0.5 - Math.random());
+        let target = shuffled[0];
+        document.getElementById('target-image').src = target;
+        shuffled.forEach(src => {
+            let img = document.createElement('img');
+            img.src = src;
+            img.onclick = () => img.classList.toggle('selected');
+            grid.appendChild(img);
+        });
+    }
     function nextCaptcha() {
         if (count < 19) {
             count++;
             document.getElementById('progress').innerText = count + " / 19";
-            document.getElementById('captcha').checked = false;
+            loadCaptcha();
         } else {
             document.getElementById('captcha-container').classList.add('hidden');
             document.getElementById('final-page').classList.remove('hidden');
         }
     }
+    loadCaptcha();
 </script>
 
 </body>
