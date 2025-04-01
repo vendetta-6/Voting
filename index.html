@@ -5,19 +5,19 @@
     <title>Advanced Robot Detector</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f9f9f9;
-            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
         }
         .captcha-container {
-            background: white;
-            border: 1px solid #d3d3d3;
-            padding: 15px;
             width: 350px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
         .captcha-images {
@@ -35,64 +35,53 @@
         .captcha-images img.selected {
             border: 2px solid blue;
         }
-        .verify-btn {
-            margin-top: 15px;
-            padding: 10px;
+        button {
             background-color: #4285f4;
             color: white;
             border: none;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            width: 100%;
+            margin-top: 10px;
         }
         .hidden {
             display: none;
         }
-        .final-page {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff9800;
-            animation: sparkle 1s infinite alternate;
-        }
-        @keyframes sparkle {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
-        }
     </style>
 </head>
 <body>
-    <div class="captcha-container" id="captcha">
-        <p>Select all images that match this one:</p>
-        <div class="captcha-images" id="images"></div>
-        <button class="verify-btn" onclick="nextTest()">Verify</button>
+    <div class="captcha-container" id="captchaContainer">
+        <p>Select all images matching this one:</p>
+        <img id="targetImage" src="" alt="Target" style="width: 80px; height: 80px; border: 1px solid #ddd;">
+        <div class="captcha-images" id="imageGrid"></div>
+        <button id="verifyButton">Verify</button>
     </div>
-    <div class="final-page hidden" id="final">
-        🎉 April Fools! 🎉
-    </div><script>
-    let testCount = 0;
-    const maxTests = 19;
-    function loadCaptcha() {
-        const images = document.getElementById('images');
-        images.innerHTML = '';
-        for (let i = 0; i < 9; i++) {
-            const img = document.createElement('img');
-            img.src = `https://picsum.photos/100/100?random=${Math.random()}`;
-            img.onclick = () => img.classList.toggle('selected');
-            images.appendChild(img);
-        }
+    <script>
+        const images = [
+            "cat1.jpg", "cat2.jpg", "dog1.jpg", "dog2.jpg", "tree1.jpg", "tree2.jpg", "car1.jpg", "car2.jpg", "bird1.jpg"
+        ];
+        let step = 1;
+        let maxSteps = 19;function loadCaptcha() {
+        document.getElementById("targetImage").src = images[Math.floor(Math.random() * images.length)];
+        let grid = document.getElementById("imageGrid");
+        grid.innerHTML = "";
+        images.sort(() => Math.random() - 0.5).slice(0, 9).forEach(img => {
+            let imgElement = document.createElement("img");
+            imgElement.src = img;
+            imgElement.onclick = () => imgElement.classList.toggle("selected");
+            grid.appendChild(imgElement);
+        });
     }
-    function nextTest() {
-        testCount++;
-        if (testCount < maxTests) {
+
+    document.getElementById("verifyButton").addEventListener("click", () => {
+        if (step < maxSteps) {
+            step++;
             loadCaptcha();
         } else {
-            document.getElementById('captcha').classList.add('hidden');
-            document.getElementById('final').classList.remove('hidden');
+            document.body.innerHTML = '<h1 style="text-align:center; font-size:24px;">🎉 April Fools! 🎉</h1>';
         }
-    }
+    });
+
     loadCaptcha();
 </script>
 
