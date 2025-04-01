@@ -2,87 +2,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not a Robot Test</title>
+    <title>Advanced Robot Detector</title>
     <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            background-color: #f9f9f9;
             font-family: Arial, sans-serif;
+        }
+        .captcha-container {
+            background: white;
+            border: 1px solid #d3d3d3;
+            padding: 15px;
+            width: 350px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
-        .captcha-box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .hidden { display: none; }
-        .celebration {
-            font-size: 2em;
-            animation: pop 0.5s infinite alternate;
-        }
-        @keyframes pop {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.2); }
-        }
-        .grid {
+        .captcha-images {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 5px;
             margin-top: 10px;
         }
-        .grid img {
+        .captcha-images img {
             width: 100px;
             height: 100px;
             cursor: pointer;
             border: 2px solid transparent;
         }
-        .grid img.selected {
-            border-color: green;
+        .captcha-images img.selected {
+            border: 2px solid blue;
+        }
+        .verify-btn {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+        .final-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9800;
+            animation: sparkle 1s infinite alternate;
+        }
+        @keyframes sparkle {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
     </style>
 </head>
 <body>
-    <div id="captcha-container" class="captcha-box">
-        <h2>Prove you're not a robot</h2>
+    <div class="captcha-container" id="captcha">
         <p>Select all images that match this one:</p>
-        <img id="target-image" src="" width="100" height="100">
-        <div class="grid" id="image-grid"></div>
-        <button onclick="nextCaptcha()">Verify</button>
-        <p id="progress">1 / 19</p>
-    </div><div id="final-page" class="hidden">
-    <h1 class="celebration">🎉 April Fools! 🎉</h1>
-</div>
-
-<script>
-    const images = [
-        "cat1.jpg", "cat2.jpg", "cat3.jpg", "dog1.jpg", "dog2.jpg", "dog3.jpg", "rabbit.jpg", "hamster.jpg", "plant.jpg"
-    ];
-    let count = 1;
+        <div class="captcha-images" id="images"></div>
+        <button class="verify-btn" onclick="nextTest()">Verify</button>
+    </div>
+    <div class="final-page hidden" id="final">
+        🎉 April Fools! 🎉
+    </div><script>
+    let testCount = 0;
+    const maxTests = 19;
     function loadCaptcha() {
-        let grid = document.getElementById('image-grid');
-        grid.innerHTML = "";
-        let shuffled = images.sort(() => 0.5 - Math.random());
-        let target = shuffled[0];
-        document.getElementById('target-image').src = target;
-        shuffled.forEach(src => {
-            let img = document.createElement('img');
-            img.src = src;
+        const images = document.getElementById('images');
+        images.innerHTML = '';
+        for (let i = 0; i < 9; i++) {
+            const img = document.createElement('img');
+            img.src = `https://picsum.photos/100/100?random=${Math.random()}`;
             img.onclick = () => img.classList.toggle('selected');
-            grid.appendChild(img);
-        });
+            images.appendChild(img);
+        }
     }
-    function nextCaptcha() {
-        if (count < 19) {
-            count++;
-            document.getElementById('progress').innerText = count + " / 19";
+    function nextTest() {
+        testCount++;
+        if (testCount < maxTests) {
             loadCaptcha();
         } else {
-            document.getElementById('captcha-container').classList.add('hidden');
-            document.getElementById('final-page').classList.remove('hidden');
+            document.getElementById('captcha').classList.add('hidden');
+            document.getElementById('final').classList.remove('hidden');
         }
     }
     loadCaptcha();
